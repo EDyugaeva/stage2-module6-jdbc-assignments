@@ -43,7 +43,7 @@ public class SimpleJDBCRepository {
 
     }
 
-    public User findUserById(Long userId) throws SQLException {
+    public User findUserById(Long userId)  {
         User user = new User();
         try (Connection connection = CustomDataSource.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(findUserByIdSQL);) {
@@ -62,11 +62,13 @@ public class SimpleJDBCRepository {
             user.setAge(age);
             user.setId(userId);
             user.setLastName(lastName);
+        } catch (SQLException e) {
+            System.out.println("exception");;
         }
         return user;
     }
 
-    public User findUserByName(String userName) throws SQLException {
+    public User findUserByName(String userName)  {
         User user = new User();
         try (Connection connection = CustomDataSource.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(findUserByNameSQL);) {
@@ -87,13 +89,16 @@ public class SimpleJDBCRepository {
             user.setId(userId);
             user.setLastName(lastName);
         }
+        catch (SQLException e) {
+            System.out.println("exception");;
+        }
 
         return user;
 
 
     }
 
-    public List<User> findAllUser() throws SQLException {
+    public List<User> findAllUser()   {
         List<User> users = new ArrayList<>();
         try (Connection connection = CustomDataSource.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(findAllUserSQL);) {
@@ -106,10 +111,13 @@ public class SimpleJDBCRepository {
                 users.add(new User(id, firstName, lastName, age));
             }
         }
+        catch (SQLException e) {
+            System.out.println("exception");;
+        }
         return users;
     }
 
-    public User updateUser(User user) throws SQLException {
+    public User updateUser(User user)  {
         try (Connection connection = CustomDataSource.getInstance().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(updateUserSQL);) {
             preparedStatement.setString(1, user.getFirstName());
@@ -117,17 +125,23 @@ public class SimpleJDBCRepository {
             preparedStatement.setInt(3, user.getAge());
             preparedStatement.setLong(4, user.getId());
         }
+        catch (SQLException e) {
+            System.out.println("exception");;
+        }
 
         return user;
 
 
     }
 
-    public void deleteUser(Long userId) throws SQLException {
+    public void deleteUser(Long userId)  {
         try (Connection connection = CustomDataSource.getInstance().getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(deleteUser);) {
             preparedStatement.setLong(1, userId);
             if (preparedStatement.executeUpdate() == 0) throw new SQLException("No such user exists");
+        }
+        catch (SQLException e) {
+            System.out.println("exception");;
         }
 
     }
