@@ -129,12 +129,13 @@ public class SimpleJDBCRepository {
             preparedStatement.setString(2, user.getLastName());
             preparedStatement.setInt(3, user.getAge());
             preparedStatement.setLong(4, user.getId());
+            preparedStatement.executeUpdate();
         }
         catch (SQLException e) {
             throwSQLException(e);
         }
 
-        return user;
+        return findUserById(user.getId());
 
 
     }
