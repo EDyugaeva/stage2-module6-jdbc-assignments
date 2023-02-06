@@ -33,7 +33,7 @@ public class Main {
         logger.log(Level.INFO,"Updated user: {updatedUser}");
 
         // Delete the user
-        repo.deleteUser(userId);
+//        repo.deleteUser(userId);
         logger.log(Level.INFO,"Deleted user with ID: {userId}");
     }
 }
