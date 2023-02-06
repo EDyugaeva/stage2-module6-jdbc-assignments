@@ -22,7 +22,7 @@ public class SimpleJDBCRepository {
     private static final String findUserByNameSQL = "SELECT * from myusers where firstname = ?";
     private static final String findAllUserSQL = "SELECT * from myusers";
 
-    public Long createUser(User user) throws SQLException {
+    public Long createUser(User user) {
         Long result = null;
 
         try (Connection connection = CustomDataSource.getInstance().getConnection();
@@ -38,6 +38,11 @@ public class SimpleJDBCRepository {
                 result = rs.getLong(1);
                 System.out.println(result);
             }
+
+        }
+        catch (SQLException e) {
+            throwSQLException(e);
+
         }
         return result;
 
@@ -63,7 +68,7 @@ public class SimpleJDBCRepository {
             user.setId(userId);
             user.setLastName(lastName);
         } catch (SQLException e) {
-            System.out.println("exception");;
+            throwSQLException(e);
         }
         return user;
     }
@@ -90,7 +95,7 @@ public class SimpleJDBCRepository {
             user.setLastName(lastName);
         }
         catch (SQLException e) {
-            System.out.println("exception");;
+            throwSQLException(e);
         }
 
         return user;
@@ -112,7 +117,7 @@ public class SimpleJDBCRepository {
             }
         }
         catch (SQLException e) {
-            System.out.println("exception");;
+            throwSQLException(e);
         }
         return users;
     }
@@ -126,7 +131,7 @@ public class SimpleJDBCRepository {
             preparedStatement.setLong(4, user.getId());
         }
         catch (SQLException e) {
-            System.out.println("exception");;
+            throwSQLException(e);
         }
 
         return user;
@@ -141,8 +146,16 @@ public class SimpleJDBCRepository {
             if (preparedStatement.executeUpdate() == 0) throw new SQLException("No such user exists");
         }
         catch (SQLException e) {
-            System.out.println("exception");;
+            throwSQLException(e);
         }
 
+    }
+
+    public void throwSQLException(Exception e) {
+        String message = String.format("%s: %s", e.getClass().getName(), e.getMessage());
+        if (e.getCause() != null) {
+            message += String.format("\nCause: %s: %s", e.getCause().getClass().getName(), e.getCause().getMessage());
+        }
+        throw new RuntimeException(message);
     }
 }
